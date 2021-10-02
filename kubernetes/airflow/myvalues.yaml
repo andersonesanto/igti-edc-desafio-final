@@ -181,10 +181,17 @@ env:
 #   value: ""
 
 # Secrets for all airflow containers
-secret: []
+secret:
 # - envName: ""
 #   secretName: ""
 #   secretKey: ""
+  - envName: AIRFLOW_VAR_AWS_ACCESS_KEY_ID
+    secretName: aws-credentials
+    secretKey: aws_access_key_id
+  - envName: AIRFLOW_VAR_AWS_SECRET_ACCESS_KEY
+    secretName: aws-credentials
+    secretKey: aws_secret_access_key
+
 
 # Extra secrets that will be managed by the chart
 # (You can use them with extraEnv or extraEnvFrom or some of the extraVolumes values).

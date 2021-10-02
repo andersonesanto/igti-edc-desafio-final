@@ -81,12 +81,12 @@ cd ingestion
 
 - Criar Cluster EKS e o bucket do Datalake
 ```bash
-eks\eks-create-cluster-igtik8s.sh
+eks/eks-create-cluster-edcm5k8s.sh
 ```
 
 - Instalar Spark-Operator
 ```bash
-kubernetes\spark\setup-spark.sh
+kubernetes/spark/setup-spark.sh
 ```
 
 - Copiar arquivos pyspark para o diretório no Datalake
@@ -94,7 +94,23 @@ kubernetes\spark\setup-spark.sh
 aws s3 sync dags/pyspark/ s3://datalake-edc-m5-597495568095/pyspark/
 ```
 
+- Criar kubernetes secret aws-credentials
+Certifique-se de ter as variáveis de ambiente AWS_ACCESS_KEY_ID e AWS_SECRET_ACCESS_KEY criadas corretamente no ambiente.
+O arquivo kubernetes/airflow/myvalues.yaml irá instâncias o conteúdo do secret como variáveis do airflow.
+
+```bash
+kubectl create secret generic aws-credentials \
+--from-literal=aws_access_key_id=$AWS_ACCESS_KEY_ID \
+--from-literal=aws_secret_access_key=$AWS_SECRET_ACCESS_KEY \
+-n airflow
+```
+
 - Instalar Airflow
 ```bash
-kubernetes\airflow\helm-install-airflow.sh
+kubernetes/airflow/helm-install-airflow.sh
 ```
+
+
+
+
+eksctl delete cluster --region=us-east-2 --name=edcm5k8s

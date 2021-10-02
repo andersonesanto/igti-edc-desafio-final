@@ -41,7 +41,7 @@ def create_and_trigger_crawler():
 
 
 with DAG(
-    'enade_batch',
+    'enem_job',
     default_args={
         'owner': 'Santo',
         'depends_on_past': False,
