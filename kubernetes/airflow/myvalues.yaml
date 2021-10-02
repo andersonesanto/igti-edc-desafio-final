@@ -176,7 +176,10 @@ env:
   - name: AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER
     value: 's3://datalake-edc-m5-597495568095/airflow/logs/'
   - name: AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID
-    value: 'aws_santo_mba'
+    value: 'aws_default'
+  - name: AIRFLOW_CONN_AWS_DEFAULT
+    value: 'aws://'
+
 # - name: ""
 #   value: ""
 

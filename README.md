@@ -33,6 +33,7 @@ Os alunos deverão desempenhar as seguintes atividades:
 4. Realizar a ingestão dos dados do Censo da Educação Superior 2019 no AWS S3 ou outro storage de nuvem de sua escolha.  
 Dados disponíveis em  
 <https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-da-educacao-superior>  
+<https://download.inep.gov.br/microdados/microdados_educacao_superior_2019.zip>
 Os dados devem ser ingeridos de maneira automatizada na zona raw ou zona crua ou zona bronze do seu Data Lake.
 
 5. Utilizar o SparkOperator no Kubernetes para transformar os dados no formato parquet e escrevê-los na zona staging ou zona silver do seu data lake.

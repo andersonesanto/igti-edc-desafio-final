@@ -62,7 +62,7 @@ with DAG(
         namespace='airflow',
         image="amazon/aws-cli",
         cmds=["bash", "-c"],
-        arguments=["set -x ; curl http://172.18.0.1:8080/microdados_educacao_superior_2019.zip -o mes2019.zip; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/ --recursive"],
+        arguments=["set -x ; curl https://download.inep.gov.br/microdados/microdados_educacao_superior_2019.zip -o mes2019.zip; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/ --recursive"],
         name="enem_ingestion",
         task_id="enem_ingestion",
         image_pull_policy="Always",
