@@ -50,3 +50,51 @@ Os dados devem ser ingeridos de maneira automatizada na zona raw ou zona crua ou
 
 10. Quando o desenho da arquitetura estiver pronto, crie um repositório no Github (ou Gitlab, ou Bitbucket, ou outro de sua escolha) e coloque os códigos de processos Python e implantação da estrutura Kubernetes.
 ***
+
+### Diretórios do DataLake
+AWS S3 Bucket s3://datalake-edc-m5-597495568095
+
+| Diretório | URI | Descrição |
+| -- | -- | -- |
+| pyspark | s3://datalake-edc-m5-597495568095/pyspark | Arquivos fonte em python/pyspark utilizados pelas etapas do Airflow |
+| rawdata | s3://datalake-edc-m5-597495568095/rawdata/enem | Dados CSV RAW |
+| trusteddata | s3://datalake-edc-m5-597495568095/trusteddata/enem | Dados parquet RAW |
+| servicedata | s3://datalake-edc-m5-597495568095/servicedata/enem | Tabelas tratadas e prontas para consumo |
+| airflowlogs | s3://datalake-edc-m5-597495568095/airflow/logs | Logs do Airflow |
+
+### Requisitos
+- aws cli
+- eksctl 
+- kubens
+- kubectx
+- helm
+- Conta AWS criada e AWS_KEY_ID configurada no ambiente
+- Variáveis AWS_ACCESS_KEY_ID e AWS_SECRET_ACCESS_KEY exportadas no shell
+
+### Sequencia de execução
+
+- Criar a imagem docker para ingestao
+```bash
+cd ingestion
+./build-push.sh
+```
+
+- Criar Cluster EKS e o bucket do Datalake
+```bash
+eks\eks-create-cluster-igtik8s.sh
+```
+
+- Instalar Spark-Operator
+```bash
+kubernetes\spark\setup-spark.sh
+```
+
+- Copiar arquivos pyspark para o diretório no Datalake
+```bash
+aws s3 sync dags/pyspark/ s3://datalake-edc-m5-597495568095/pyspark/
+```
+
+- Instalar Airflow
+```bash
+kubernetes\airflow\helm-install-airflow.sh
+```
