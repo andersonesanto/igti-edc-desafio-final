@@ -255,7 +255,7 @@ if __name__ == "__main__":
         .read
         .format("csv")
         .options(header='true', delimiter='|', encoding='ISO-8859-1', inferschema=True)
-        .load("s3a://datalake-edc-m5-597495568095/rawdata/enem/SUP_AUX_CINE_BRASIL_2019.CSV")
+        .load("s3a://datalake-edc-m5-597495568095/rawdata/enem/TB_AUX_CINE_BRASIL_2019.CSV")
     )
 
     df_aux_cine_brasil.printSchema()
