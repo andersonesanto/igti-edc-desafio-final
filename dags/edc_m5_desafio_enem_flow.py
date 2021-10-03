@@ -68,7 +68,7 @@ with DAG(
         image="597495568095.dkr.ecr.us-east-2.amazonaws.com/igti-edc-m5-ingestion:1.0",
         cmds=["bash", "-c"],
         # arguments=["set -x ; curl https://download.inep.gov.br/microdados/microdados_educacao_superior_2019.zip -o mes2019.zip; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/ --recursive"],
-        arguments=["set -x ; curl https://web-597495568095.s3.us-east-2.amazonaws.com/microdados_educacao_superior_2019.zip -o mes2019.zip; ls -l ; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/ --recursive"],
+        arguments=["set -x ; curl https://web-597495568095.s3.us-east-2.amazonaws.com/microdados_educacao_superior_2019.zip -o mes2019.zip; ls -l ; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/enem/ --recursive"],
         name="ingestion",
         task_id="ingestion",
         image_pull_policy="Always",
