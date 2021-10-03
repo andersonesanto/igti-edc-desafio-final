@@ -80,7 +80,7 @@ with DAG(
     )
 
     ingestion_sensor = SparkKubernetesSensor(
-        task_id='ingestion_monitor',
+        task_id='ingestion_sensor',
         namespace="airflow",
         application_name="{{ task_instance.xcom_pull(task_ids='ingestion')['metadata']['name'] }}",
         kubernetes_conn_id="kubernetes_default",
