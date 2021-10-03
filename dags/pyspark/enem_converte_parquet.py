@@ -29,7 +29,7 @@ if __name__ == "__main__":
         .read
         .format("csv")
         .options(header='true', inferSchema='true', delimiter=';')
-        .load("s3a://datalake-edc-m5-597495568095/rawdata/enem/")
+        .load("s3a://datalake-edc-m5-597495568095/rawdata/enem/SUP_ALUNO_2019.CSV ")
     )
     
     df.printSchema()

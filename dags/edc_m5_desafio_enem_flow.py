@@ -107,7 +107,9 @@ with DAG(
     )
 
 
-ingestion \
->> converte_parquet \
->> converte_parquet_sensor \
->> create_and_trigger_crawler_enem
+# ingestion \
+# >> converte_parquet \
+# >> converte_parquet_sensor \
+# >> create_and_trigger_crawler_enem
+
+converte_parquet >> converte_parquet_sensor >> create_and_trigger_crawler_enem
