@@ -33,7 +33,7 @@ def create_and_trigger_crawler():
             Targets={
                 'S3Targets': [
                     {
-                        'Path': 's3://datalake-edc-m5-597495568095/servicedata/enem/',
+                        'Path': 's3://datalake-edc-m5-597495568095/trusteddata/enem/',
                         'Exclusions': []
                     },
                 ]
