@@ -9,7 +9,7 @@ spec:
       emptyDir: {}
   sparkConf:
     spark.jars.packages: "org.apache.hadoop:hadoop-aws:2.7.3,org.apache.spark:spark-avro_2.12:3.0.1"
-    spark.kubernetes.allocation.batch.size: "10"
+    spark.kubernetes.allocation.batch.size: "1"
   hadoopConf:
     fs.s3a.aws.credentials.provider: com.amazonaws.auth.EnvironmentVariableCredentialsProvider
     fs.s3a.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
