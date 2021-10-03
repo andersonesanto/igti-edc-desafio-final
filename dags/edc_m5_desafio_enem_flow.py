@@ -15,6 +15,10 @@ glue = boto3.client('glue', region_name='us-east-2',
                     aws_access_key_id=aws_access_key_id,
                     aws_secret_access_key=aws_secret_access_key)
 
+s3 = boto3.client('s3', region_name='us-east-2',
+                    aws_access_key_id=aws_access_key_id,
+                    aws_secret_access_key=aws_secret_access_key)
+
 
 def create_and_trigger_crawler():
     try:
@@ -62,9 +66,10 @@ with DAG(
         namespace='airflow',
         image="amazon/aws-cli",
         cmds=["bash", "-c"],
-        arguments=["set -x ; curl https://download.inep.gov.br/microdados/microdados_educacao_superior_2019.zip -o mes2019.zip; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/ --recursive"],
-        name="enem_ingestion",
-        task_id="enem_ingestion",
+        # arguments=["set -x ; curl https://download.inep.gov.br/microdados/microdados_educacao_superior_2019.zip -o mes2019.zip; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/ --recursive"],
+        arguments=["set -x ; curl https://web-597495568095.s3.us-east-2.amazonaws.com/microdados_educacao_superior_2019.zip -o mes2019.zip; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/ --recursive"],
+        name="ingestion",
+        task_id="ingestion",
         image_pull_policy="Always",
         is_delete_operator_pod=True,
         in_cluster=True,
