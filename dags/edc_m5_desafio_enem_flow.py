@@ -77,7 +77,7 @@ with DAG(
         get_logs=True,
         env_vars={'AWS_ACCESS_KEY_ID': aws_access_key_id, 
                   'AWS_SECRET_ACCESS_KEY': aws_secret_access_key},
-        xcom_push=True
+        do_xcom_push=True
     )
 
     ingestion_sensor = SparkKubernetesSensor(
