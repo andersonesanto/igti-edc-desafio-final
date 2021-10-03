@@ -32,8 +32,8 @@ if __name__ == "__main__":
         spark
         .read
         .format("csv")
-        .options(header='true', inferSchema='true', delimiter=';')
-        .load("s3a://datalake-edc-m5-597495568095/rawdata/enem/SUP_ALUNO_2019.CSV")
+        .options(header='true', inferSchema='true', delimiter='|')
+        .load("s3a://datalake-edc-m5-597495568095/rawdata/enem/")
     )
     
     df.printSchema()
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     .write
     .mode("overwrite")
     .format("parquet")
-    .save("s3a://datalake-edc-m5-597495568095/trusteddata/enem/")
+    .save("s3a://datalake-edc-m5-597495568095/trusteddata/enem")
     )
 
     print("*********************")
