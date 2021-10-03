@@ -1,5 +1,9 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
+import os
+
+aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
+aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
 
 # set conf
 conf = (
@@ -29,7 +33,7 @@ if __name__ == "__main__":
         .read
         .format("csv")
         .options(header='true', inferSchema='true', delimiter=';')
-        .load("s3a://datalake-edc-m5-597495568095/rawdata/enem/SUP_ALUNO_2019.CSV ")
+        .load("s3a://datalake-edc-m5-597495568095/rawdata/enem/SUP_ALUNO_2019.CSV")
     )
     
     df.printSchema()
