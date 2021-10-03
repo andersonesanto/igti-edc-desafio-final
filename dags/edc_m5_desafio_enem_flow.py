@@ -76,16 +76,15 @@ with DAG(
         in_cluster=True,
         get_logs=True,
         env_vars={'AWS_ACCESS_KEY_ID': aws_access_key_id, 
-                  'AWS_SECRET_ACCESS_KEY': aws_secret_access_key},
-        do_xcom_push=True
+                  'AWS_SECRET_ACCESS_KEY': aws_secret_access_key}
     )
 
-    ingestion_sensor = SparkKubernetesSensor(
-        task_id='ingestion_sensor',
-        namespace="airflow",
-        application_name="{{ task_instance.xcom_pull(task_ids='ingestion')['metadata']['name'] }}",
-        kubernetes_conn_id="kubernetes_default",
-    )    
+    #ingestion_sensor = SparkKubernetesSensor(
+    #    task_id='ingestion_sensor',
+    #    namespace="airflow",
+    #    application_name="{{ task_instance.xcom_pull(task_ids='ingestion')['metadata']['name'] }}",
+    #    kubernetes_conn_id="kubernetes_default",
+    #)    
 
     converte_parquet = SparkKubernetesOperator(
         task_id='converte_parquet',
@@ -109,7 +108,6 @@ with DAG(
 
 
 ingestion \
->> ingestion_sensor \
 >> converte_parquet \
 >> converte_parquet_sensor \
 >> create_and_trigger_crawler_enem
