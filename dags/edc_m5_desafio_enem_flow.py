@@ -16,10 +16,6 @@ glue = boto3.client('glue', region_name='us-east-2',
                     aws_access_key_id=aws_access_key_id,
                     aws_secret_access_key=aws_secret_access_key)
 
-s3 = boto3.client('s3', region_name='us-east-2',
-                    aws_access_key_id=aws_access_key_id,
-                    aws_secret_access_key=aws_secret_access_key)
-
 
 def create_and_trigger_crawler():
     try:
@@ -56,7 +52,6 @@ with DAG(
         'max_active_runs': 1,
     },
     description='submit spark-pi as sparkApplication on kubernetes',
-    # schedule_interval="0 */2 * * *",
     schedule_interval=None,
     start_date=days_ago(1),
     catchup=False,
@@ -64,34 +59,27 @@ with DAG(
           'enem', 'igti', 'm5', 'desafio-final'],
 ) as dag:
 
-    #ingestion = KubernetesPodOperator(
-    #    namespace='airflow',
-    #    image="597495568095.dkr.ecr.us-east-2.amazonaws.com/igti-edc-m5-ingestion:1.0",
-    #    cmds=["bash", "-c"],
-    #    # arguments=["set -x ; curl https://download.inep.gov.br/microdados/microdados_educacao_superior_2019.zip -o mes2019.zip; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/ --recursive"],
-    #    arguments=["set -x ; curl https://web-597495568095.s3.us-east-2.amazonaws.com/microdados_educacao_superior_2019.zip -o mes2019.zip; ls -l ; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/enem/ --recursive"],
-    #    name="ingestion",
-    #    task_id="ingestion",
-    #    image_pull_policy="Always",
-    #    is_delete_operator_pod=True,
-    #    in_cluster=True,
-    #    get_logs=True,
-    #    env_vars={'AWS_ACCESS_KEY_ID': aws_access_key_id, 
-    #              'AWS_SECRET_ACCESS_KEY': aws_secret_access_key}
-    #)
-#
-    #ingestion_sensor = SparkKubernetesSensor(
-    #    task_id='ingestion_sensor',
-    #    namespace="airflow",
-    #    application_name="{{ task_instance.xcom_pull(task_ids='ingestion')['metadata']['name'] }}",
-    #    kubernetes_conn_id="kubernetes_default",
-    #)    
+    ingestion = KubernetesPodOperator(
+        namespace='airflow',
+        image="597495568095.dkr.ecr.us-east-2.amazonaws.com/igti-edc-m5-ingestion:1.0",
+        cmds=["bash", "-c"],
+        # arguments=["set -x ; curl https://download.inep.gov.br/microdados/microdados_educacao_superior_2019.zip -o mes2019.zip; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/ --recursive"],
+        arguments=["set -x ; curl https://web-597495568095.s3.us-east-2.amazonaws.com/microdados_educacao_superior_2019.zip -o mes2019.zip; ls -l ; unzip -j -d dados mes2019.zip -i '*.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/rawdata/enem/ --recursive"],
+        name="ingestion",
+        task_id="ingestion",
+        image_pull_policy="Always",
+        is_delete_operator_pod=True,
+        in_cluster=True,
+        get_logs=True,
+        env_vars={'AWS_ACCESS_KEY_ID': aws_access_key_id,
+                  'AWS_SECRET_ACCESS_KEY': aws_secret_access_key}
+    )
 
     converte_parquet = SparkKubernetesOperator(
         task_id='converte_parquet',
         namespace="airflow",
         application_file="enem_converte_parquet.yml",
-        #kubernetes_conn_id="kubernetes_default",
+        # kubernetes_conn_id="kubernetes_default",
         do_xcom_push=True,
     )
 
@@ -99,7 +87,7 @@ with DAG(
         task_id='converte_parquet_sensor',
         namespace="airflow",
         application_name="{{ task_instance.xcom_pull(task_ids='converte_parquet')['metadata']['name'] }}",
-        #kubernetes_conn_id="kubernetes_default",
+        # kubernetes_conn_id="kubernetes_default",
     )
 
     create_and_trigger_crawler_enem = PythonOperator(
@@ -108,9 +96,7 @@ with DAG(
     )
 
 
-# ingestion \
-# >> converte_parquet \
-# >> converte_parquet_sensor \
-# >> create_and_trigger_crawler_enem
-
-converte_parquet >> converte_parquet_sensor >> create_and_trigger_crawler_enem
+ingestion \
+    >> converte_parquet \
+    >> converte_parquet_sensor \
+    >> create_and_trigger_crawler_enem
