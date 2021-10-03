@@ -90,7 +90,7 @@ with DAG(
         task_id='converte_parquet',
         namespace="airflow",
         application_file="enem_converte_parquet.yml",
-        kubernetes_conn_id="kubernetes_default",
+        #kubernetes_conn_id="kubernetes_default",
         do_xcom_push=True,
     )
 
@@ -98,7 +98,7 @@ with DAG(
         task_id='converte_parquet_sensor',
         namespace="airflow",
         application_name="{{ task_instance.xcom_pull(task_ids='converte_parquet')['metadata']['name'] }}",
-        kubernetes_conn_id="kubernetes_default",
+        #kubernetes_conn_id="kubernetes_default",
     )
 
     create_and_trigger_crawler_enem = PythonOperator(
