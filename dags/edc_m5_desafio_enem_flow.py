@@ -1,3 +1,4 @@
+from os import environ
 from airflow.utils.dates import days_ago
 from airflow import DAG
 
@@ -74,6 +75,7 @@ with DAG(
         is_delete_operator_pod=True,
         in_cluster=True,
         get_logs=True,
+        env_vars={'AWS_ACCESS_KEY_ID': '{{ aws_access_key_id }}', 'AWS_SECRET_ACCESS_KEY': '{{ aws_secret_access_key }}'}
     )
 
     ingestion_sensor = SparkKubernetesSensor(
