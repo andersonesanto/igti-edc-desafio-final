@@ -1,0 +1,1 @@
+docker run --rm igti-edc-m5-ingestion:1.0 "set -x ; curl http://172.18.0.1:8080/microdados_educacao_superior_2019.zip -o mes2019.zip; unzip -j -d dados mes2019.zip -i '*SUP_IES_2019.CSV' ; aws s3 cp dados s3://datalake-edc-m5-597495568095/landing-zone/ --recursive"

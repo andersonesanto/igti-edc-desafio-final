@@ -33,6 +33,7 @@ Os alunos deverão desempenhar as seguintes atividades:
 4. Realizar a ingestão dos dados do Censo da Educação Superior 2019 no AWS S3 ou outro storage de nuvem de sua escolha.  
 Dados disponíveis em  
 <https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-da-educacao-superior>  
+<https://download.inep.gov.br/microdados/microdados_educacao_superior_2019.zip>
 Os dados devem ser ingeridos de maneira automatizada na zona raw ou zona crua ou zona bronze do seu Data Lake.
 
 5. Utilizar o SparkOperator no Kubernetes para transformar os dados no formato parquet e escrevê-los na zona staging ou zona silver do seu data lake.
@@ -50,3 +51,67 @@ Os dados devem ser ingeridos de maneira automatizada na zona raw ou zona crua ou
 
 10. Quando o desenho da arquitetura estiver pronto, crie um repositório no Github (ou Gitlab, ou Bitbucket, ou outro de sua escolha) e coloque os códigos de processos Python e implantação da estrutura Kubernetes.
 ***
+
+### Diretórios do DataLake
+AWS S3 Bucket s3://datalake-edc-m5-597495568095
+
+| Diretório | URI | Descrição |
+| -- | -- | -- |
+| pyspark | s3://datalake-edc-m5-597495568095/pyspark | Arquivos fonte em python/pyspark utilizados pelas etapas do Airflow |
+| rawdata | s3://datalake-edc-m5-597495568095/rawdata/enem | Dados CSV RAW |
+| trusteddata | s3://datalake-edc-m5-597495568095/trusteddata/enem | Dados parquet RAW |
+| servicedata | s3://datalake-edc-m5-597495568095/servicedata/enem | Tabelas tratadas e prontas para consumo |
+| airflowlogs | s3://datalake-edc-m5-597495568095/airflow/logs | Logs do Airflow |
+
+### Requisitos
+- aws cli
+- eksctl 
+- kubens
+- kubectx
+- helm
+- Conta AWS criada e AWS_KEY_ID configurada no ambiente
+- Variáveis AWS_ACCESS_KEY_ID e AWS_SECRET_ACCESS_KEY exportadas no shell
+
+### Sequencia de execução
+
+- Criar a imagem docker para ingestao
+```bash
+cd ingestion
+./build-push.sh
+```
+
+- Criar Cluster EKS e o bucket do Datalake
+```bash
+eks/eks-create-cluster-edcm5k8s.sh
+```
+
+- Instalar Spark-Operator
+```bash
+kubernetes/spark/setup-spark.sh
+```
+
+- Copiar arquivos pyspark para o diretório no Datalake
+```bash
+aws s3 sync dags/pyspark/ s3://datalake-edc-m5-597495568095/pyspark/
+```
+
+- Criar kubernetes secret aws-credentials
+Certifique-se de ter as variáveis de ambiente AWS_ACCESS_KEY_ID e AWS_SECRET_ACCESS_KEY criadas corretamente no ambiente.
+O arquivo kubernetes/airflow/myvalues.yaml irá instâncias o conteúdo do secret como variáveis do airflow.
+
+```bash
+kubectl create secret generic aws-credentials \
+--from-literal=aws_access_key_id=$AWS_ACCESS_KEY_ID \
+--from-literal=aws_secret_access_key=$AWS_SECRET_ACCESS_KEY \
+-n airflow
+```
+
+- Instalar Airflow
+```bash
+kubernetes/airflow/helm-install-airflow.sh
+```
+
+
+
+
+eksctl delete cluster --region=us-east-2 --name=edcm5k8s
